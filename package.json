@@ -12,8 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@inquirer/prompts": "^8.3.2",
     "@ledgerhq/hw-app-xrp": "^6.36.0",
-    "@ledgerhq/hw-transport-node-hid": "^6.32.1"
+    "@ledgerhq/hw-transport-node-hid": "^6.32.1",
+    "xrpl": "^4.6.0"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
