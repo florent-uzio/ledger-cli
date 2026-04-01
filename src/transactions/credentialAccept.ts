@@ -30,7 +30,7 @@ export async function promptForFields(): Promise<{
   });
 
   const credentialType = await input({
-    message: "CredentialType (1–64 bytes):",
+    message: "CredentialType (1-64 bytes):",
     validate: validateCredentialType,
   });
 
