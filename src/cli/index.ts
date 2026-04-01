@@ -35,11 +35,17 @@ async function main() {
 
     // Step 4: Serialize and sign on Ledger
     const serialized = xrplClient.serialize(autofilled);
-    console.log("\nPlease review and approve the transaction on your Ledger device...");
+    console.log(
+      "\nPlease review and approve the transaction on your Ledger device...",
+    );
     const signature = await ledger.sign(serialized);
 
     // Step 5: Build signed blob and display
-    const signedBlob = xrplClient.insertSignature(autofilled, signature, publicKey);
+    const signedBlob = xrplClient.insertSignature(
+      autofilled,
+      signature,
+      publicKey,
+    );
     console.log("\nSigned transaction blob:\n");
     console.log(signedBlob);
 
@@ -58,9 +64,11 @@ async function main() {
     console.log("\nSubmitting transaction...");
     const result = await xrplClient.submit(signedBlob);
 
-    const txResult = result.result.meta && typeof result.result.meta === "object"
-      ? (result.result.meta as { TransactionResult: string }).TransactionResult
-      : "unknown";
+    const txResult =
+      result.result.meta && typeof result.result.meta === "object"
+        ? (result.result.meta as { TransactionResult: string })
+            .TransactionResult
+        : "unknown";
     const txHash = result.result.hash;
 
     console.log(`\nResult: ${txResult}`);
