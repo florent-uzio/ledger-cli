@@ -1,13 +1,23 @@
 {
   "name": "ledger-cli",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "CLI tool for XRP Ledger transactions with Ledger hardware wallet",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/cli/index.js",
+    "dev": "tsx src/cli/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "dependencies": {
+    "@ledgerhq/hw-app-xrp": "^6.36.0",
+    "@ledgerhq/hw-transport-node-hid": "^6.32.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
 }
