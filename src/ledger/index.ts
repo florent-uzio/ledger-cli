@@ -1,7 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore — Ledger packages have CJS/ESM interop issues with Node16 resolution
 import TransportNodeHid from "@ledgerhq/hw-transport-node-hid";
-// @ts-ignore
 import Xrp from "@ledgerhq/hw-app-xrp";
 
 const DERIVATION_PATH = "44'/144'/0'/0/0";
@@ -11,8 +10,7 @@ let transport: any = null;
 let xrpApp: any = null;
 
 export async function connect(): Promise<void> {
-  const Transport =
-    (TransportNodeHid as any).default ?? TransportNodeHid;
+  const Transport = (TransportNodeHid as any).default ?? TransportNodeHid;
   const XrpApp = (Xrp as any).default ?? Xrp;
 
   while (true) {
@@ -34,7 +32,7 @@ export async function connect(): Promise<void> {
         xrpApp = null;
       }
       console.log(
-        "Ledger device not found or XRP app not open. Retrying in 3 seconds..."
+        "Ledger device not found or XRP app not open. Retrying in 3 seconds...",
       );
       console.log("Please connect your Ledger and open the XRP app.");
       await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL_MS));

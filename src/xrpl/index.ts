@@ -1,14 +1,24 @@
 import { Client, encode } from "xrpl";
 import type { SubmittableTransaction, TxResponse } from "xrpl";
 
-const MAINNET_URL = "wss://xrplcluster.com";
+export type Network = "mainnet" | "testnet";
+
+const NETWORK_URLS: Record<Network, string> = {
+  mainnet: "wss://xrplcluster.com",
+  testnet: "wss://s.altnet.rippletest.net:51233",
+};
+
+export const EXPLORER_URLS: Record<Network, string> = {
+  mainnet: "https://livenet.xrpl.org/transactions/",
+  testnet: "https://testnet.xrpl.org/transactions/",
+};
 
 let client: Client | null = null;
 
-export async function connect(): Promise<void> {
-  client = new Client(MAINNET_URL);
+export async function connect(network: Network): Promise<void> {
+  client = new Client(NETWORK_URLS[network]);
   await client.connect();
-  console.log("Connected to XRP Ledger mainnet.");
+  console.log(`Connected to XRP Ledger ${network}.`);
 }
 
 export async function autofill(tx: SubmittableTransaction): Promise<SubmittableTransaction> {

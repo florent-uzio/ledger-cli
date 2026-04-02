@@ -1,9 +1,8 @@
-import { confirm } from "@inquirer/prompts";
+import { confirm, select } from "@inquirer/prompts";
 import * as ledger from "../ledger/index.js";
 import * as xrplClient from "../xrpl/index.js";
+import type { Network } from "../xrpl/index.js";
 import { selectTransactionType } from "../transactions/registry.js";
-
-const EXPLORER_BASE_URL = "https://livenet.xrpl.org/transactions/";
 
 async function main() {
   console.log("=== Ledger XRP CLI ===\n");
@@ -20,26 +19,35 @@ async function main() {
     console.log(`\nYour XRP address: ${address}`);
     console.log(`Public key: ${publicKey}\n`);
 
-    // Step 3: Gather transaction fields and build
+    // Step 3: Select network
+    const network = await select<Network>({
+      message: "Select network:",
+      choices: [
+        { name: "Mainnet", value: "mainnet" },
+        { name: "Testnet", value: "testnet" },
+      ],
+    });
+
+    // Step 4: Gather transaction fields and build
     const fields = await txModule.promptForFields();
     const tx = txModule.buildTransaction(address, fields);
 
-    // Step 4: Connect to XRPL mainnet and autofill
-    console.log("\nConnecting to XRP Ledger mainnet...");
-    await xrplClient.connect();
+    // Step 5: Connect to XRPL and autofill
+    console.log(`\nConnecting to XRP Ledger ${network}...`);
+    await xrplClient.connect(network);
 
     const autofilled = await xrplClient.autofill(tx);
     console.log("\nAutofilled transaction:\n");
     console.log(JSON.stringify(autofilled, null, 2));
 
-    // Step 5: Serialize and sign on Ledger
+    // Step 6: Serialize and sign on Ledger
     const serialized = xrplClient.serialize(autofilled);
     console.log(
       "\nPlease review and approve the transaction on your Ledger device...",
     );
     const signature = await ledger.sign(serialized);
 
-    // Step 6: Build signed blob and display
+    // Step 7: Build signed blob and display
     const signedBlob = xrplClient.insertSignature(
       autofilled,
       signature,
@@ -48,9 +56,9 @@ async function main() {
     console.log("\nSigned transaction blob:\n");
     console.log(signedBlob);
 
-    // Step 7: Confirm before submission
+    // Step 8: Confirm before submission
     const shouldSubmit = await confirm({
-      message: "Submit this transaction to XRP Ledger mainnet?",
+      message: `Submit this transaction to XRP Ledger ${network}?`,
       default: false,
     });
 
@@ -59,7 +67,7 @@ async function main() {
       return;
     }
 
-    // Step 8: Submit and display result
+    // Step 9: Submit and display result
     console.log("\nSubmitting transaction...");
     const result = await xrplClient.submit(signedBlob);
 
@@ -72,7 +80,7 @@ async function main() {
 
     console.log(`\nResult: ${txResult}`);
     console.log(`Transaction hash: ${txHash}`);
-    console.log(`Explorer: ${EXPLORER_BASE_URL}${txHash}`);
+    console.log(`Explorer: ${xrplClient.EXPLORER_URLS[network]}${txHash}`);
 
     if (txResult !== "tesSUCCESS") {
       console.error(`\nTransaction failed with result: ${txResult}`);
