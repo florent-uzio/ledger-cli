@@ -18,10 +18,6 @@ const registry: Record<string, TransactionModule> = {
 export async function selectTransactionType(): Promise<TransactionModule> {
   const types = Object.keys(registry);
 
-  if (types.length === 1) {
-    return registry[types[0]];
-  }
-
   const selected = await select({
     message: "Select transaction type:",
     choices: types.map((name) => ({ name, value: name })),
