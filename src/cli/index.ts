@@ -30,7 +30,7 @@ async function main() {
 
     // Step 4: Gather transaction fields and build
     const fields = await txModule.promptForFields();
-    const tx = txModule.buildTransaction(address, fields);
+    const tx = txModule.buildTransaction(address, publicKey, fields);
 
     // Step 5: Connect to XRPL and autofill
     console.log(`\nConnecting to XRP Ledger ${network}...`);

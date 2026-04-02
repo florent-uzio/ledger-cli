@@ -6,6 +6,7 @@ export interface TransactionModule {
   promptForFields(): Promise<Record<string, unknown>>;
   buildTransaction(
     account: string,
+    publicKey: string,
     fields: Record<string, unknown>,
   ): SubmittableTransaction;
 }

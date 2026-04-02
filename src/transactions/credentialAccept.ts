@@ -1,5 +1,5 @@
 import { input } from "@inquirer/prompts";
-import { convertStringToHex, isValidClassicAddress } from "xrpl";
+import { convertStringToHex, GlobalFlags, isValidClassicAddress } from "xrpl";
 import type { CredentialAccept } from "xrpl";
 
 export function validateIssuer(value: string): true | string {
@@ -39,12 +39,15 @@ export async function promptForFields(): Promise<{
 
 export function buildTransaction(
   account: string,
+  publicKey: string,
   fields: { issuer: string; credentialType: string },
 ): CredentialAccept {
   return {
     TransactionType: "CredentialAccept",
+    Flags: 2147483648,
     Account: account,
     Issuer: fields.issuer,
     CredentialType: convertStringToHex(fields.credentialType),
+    SigningPubKey: publicKey,
   };
 }
